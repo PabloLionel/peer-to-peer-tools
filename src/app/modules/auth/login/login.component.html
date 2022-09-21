@@ -1,0 +1,50 @@
+<form [formGroup]="formLogin" class="login" (ngSubmit)="login()">
+    <mat-form-field class="login__input">
+        <mat-label>Email</mat-label>
+
+        <input
+            matInput
+            formControlName="email"
+            type="text"
+        >
+
+        <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="login__input">
+        <mat-label>Contraseña</mat-label>
+
+        <input
+            matInput
+            formControlName="password"
+            [type]="hide ? 'password' : 'text'"
+        >
+
+        <button
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+        >
+            <mat-icon>
+                {{hide ? 'visibility_off' : 'visibility'}}
+            </mat-icon>
+        </button>
+    </mat-form-field>
+
+    <button
+        mat-raised-button
+        color="primary"
+    >Iniciar sesión</button>
+
+    <mat-progress-bar mode="indeterminate" [style.display]="showSpinner ? 'block' : 'none'"></mat-progress-bar>
+    <mat-divider class="with-space" [style.display]="!showSpinner ? 'block' : 'none'"></mat-divider>
+
+    <button 
+        type="button"
+        mat-button
+        color="primary"
+        (click)="toRegister.emit()"
+    >Registrarme</button>
+</form>

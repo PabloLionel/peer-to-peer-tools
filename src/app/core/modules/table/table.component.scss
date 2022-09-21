@@ -1,0 +1,59 @@
+:host {
+  display: block;
+  background: #fff;
+}
+
+.crud,
+table {
+  width: 100%;
+
+  th,
+  tr {
+    text-align: center;
+  }
+
+  margin-bottom: 0;
+}
+
+table {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+  td {
+    border-bottom: 0;
+  }
+
+  tr.element-row:not(.expanded-row):hover {
+    background: whitesmoke;
+  }
+
+  tr.element-row:not(.expanded-row):active {
+    background: #efefef;
+  }
+
+  tr.detail-row {
+    height: 0;
+  }
+
+  .element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+}
+
+.crud {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 1rem;
+
+  &__filter {
+    flex-grow: 1;
+
+    margin-left: 0.5em;
+  }
+
+  &__btn {
+    margin-left: 1em;
+    margin-right: 0.5em;
+  }
+}

@@ -1,0 +1,163 @@
+<div class="crud">
+  <mat-form-field
+    *ngIf="!_config.filterType"
+    class="crud__filter"
+    appearance="standard"
+  >
+    <mat-label>Filtrar</mat-label>
+    <input #input matInput (keyup)="applyFilter($event)" placeholder="" />
+  </mat-form-field>
+
+  <app-filter-by-column
+    *ngIf="_config.filterType === _FILTER_TYPE.byColumn"
+    [columnDefs]="_config.columnDefs"
+    (changeFilter)="applyFilter($event)"
+  ></app-filter-by-column>
+
+  <button type="button" class="crud__btn" mat-button (click)="add.emit()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<table
+  matTableResponsive
+  mat-table
+  matSort
+  [dataSource]="_config.dataSource"
+  multiTemplateDataRows
+>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox
+        (change)="$event ? masterToggle() : null"
+        [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()"
+        [aria-label]="checkboxLabel()"
+      >
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selection.toggle(row) : null"
+        [checked]="selection.isSelected(row)"
+        [aria-label]="checkboxLabel(row)"
+      >
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Columns -->
+  <ng-container
+    *ngFor="let col of _config.columnDefs; let i = index"
+    [matColumnDef]="col.def"
+  >
+    <th
+      *matHeaderCellDef
+      mat-header-cell
+      mat-sort-header
+      [disabled]="!col.sortable"
+    >
+      {{ col.label }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      (click)="onClick(row); $event.stopPropagation()"
+      (contextmenu)="_config.menu && _onContextMenu($event, { row })"
+    >
+      {{ row | defValue: col.def:col.config }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button
+        mat-icon-button
+        aria-label="expand row"
+        (click)="
+          expandedElement = expandedElement === element ? null : element;
+          $event.stopPropagation();
+        "
+      >
+        <mat-icon *ngIf="expandedElement !== element"
+          >keyboard_arrow_down</mat-icon
+        >
+        <mat-icon *ngIf="expandedElement === element"
+          >keyboard_arrow_up</mat-icon
+        >
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      [style.display]="breakpoint === 's' ? 'none': 'table-cell'"
+      mat-cell
+      *matCellDef="let row"
+      [attr.colspan]="_config.columnsToDisplayWithExpand.length"
+    >
+      <div
+        class="element-detail"
+        [@detailExpand]="row === expandedElement ? 'expanded' : 'collapsed'"
+      >
+        <ng-container
+          *ngTemplateOutlet="detailExpandRef; context: { row: row }"
+        ></ng-container>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="_config.columnsToDisplayWithExpand"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: _config.columnsToDisplayWithExpand"
+    [class.expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="detail-row"
+  ></tr>
+
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">
+      No hay datos
+      {{
+        _config.dataSource.filter
+          ? "que coincidan con " + _config.dataSource.filter
+          : ""
+      }}
+    </td>
+  </tr>
+</table>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page"
+></mat-paginator>
+
+<div
+  [style.position]="'fixed'"
+  [style.top]="contextMenuPosition.y"
+  [style.left]="contextMenuPosition.x"
+  [matMenuTriggerFor]="contextMenu"
+></div>
+
+<mat-menu #contextMenu="matMenu">
+  <ng-template matMenuContent let-row="row">
+    <button
+      *ngFor="let m of menuItems"
+      mat-menu-item
+      (click)="onContextMenuAction(m, row)"
+    >
+      <mat-icon *ngIf="m.icon">{{ m.icon }}</mat-icon>
+      {{ m.label }}
+    </button>
+  </ng-template>
+</mat-menu>

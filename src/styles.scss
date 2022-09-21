@@ -1,0 +1,14 @@
+@import "scss/ed-grid.config";
+@import "scss/base";
+@import "app/core/modules/table/mat-table-responsive/mat-table-responsive.directive";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #303030;
+  color: #fff;
+}

@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+  <p>{{ data.msg }}</p>
+  {{ data.menssage }}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button *ngIf="data.cancel" mat-button [mat-dialog-close]="false">
+    Cancelar
+  </button>
+  <button mat-button mat-dialog-close>
+    {{ data.textBtn }}
+  </button>
+</mat-dialog-actions>

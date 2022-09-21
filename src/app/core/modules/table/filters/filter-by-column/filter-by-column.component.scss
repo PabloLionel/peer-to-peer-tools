@@ -1,0 +1,24 @@
+form,
+:host {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+:host,
+.filter-fields,
+.filter {
+    width: 100%;
+}
+
+.filter-fields {
+    margin-bottom: 0;
+
+    &__reset {
+        width: 110px;
+    }
+}
+
+.select {
+    width: 100px;
+}

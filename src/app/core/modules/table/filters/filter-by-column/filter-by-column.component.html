@@ -1,0 +1,32 @@
+<form class="filter-fields" [formGroup]="formFilters">
+  <button
+    type="button"
+    class="filter-fields__reset"
+    mat-button
+    color="warn"
+    (click)="onReset()"
+  >Reiniciar</button>
+
+  <mat-form-field class="select" appearance="legacy">
+    <mat-label>Columna</mat-label>
+    <mat-select formControlName="column">
+      <mat-option
+        *ngFor="let o of columnDefs"
+        [value]="o.def"
+        [disabled]="o.filter && o.filter.disabled"
+      >
+        {{ o.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="filter" appearance="standard">
+    <mat-label>Filtrar</mat-label>
+    <input
+      matInput
+      placeholder=""
+      formControlName="filter"
+      autofocus
+    />
+  </mat-form-field>
+</form>
